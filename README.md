@@ -4,7 +4,7 @@
 
 ```
                                  .
-                                /|\        SolarFlare v0.1.0
+                                /|\        SolarFlare v2026.999.0
                                / | \       for CachyOS x86_64 + GNOME/Wayland
                               /  |  \      "There is no lag. There is only network."
                              /   |   \
