@@ -190,7 +190,7 @@
     "controller": "Enable Gamepad Input",
     "controller_desc": "Allows guests to control the host system with a gamepad / controller",
     "input_seat": "Input Seat Isolation",
-    "input_seat_desc": "Systemd-logind seat name for virtual input device isolation (e.g. seat1). Leave empty to follow XDG_SEAT. Set to seat0 or leave empty to disable isolation. Create a seat with: loginctl seat-add seat1",
+    "input_seat_desc": "Systemd-logind seat name for virtual input device isolation (e.g. seat1). Leave empty to follow XDG_SEAT. Set explicitly to seat0 (or leave empty with XDG_SEAT unset) to disable isolation. Create a seat with: loginctl seat-add seat1",
     "credentials_file": "Credentials File",
     "credentials_file_desc": "Store Username/Password separately from Sunshine's state file.",
     "csrf_allowed_origins": "CSRF Allowed Origins",

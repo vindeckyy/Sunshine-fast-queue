@@ -281,7 +281,7 @@ After install, complete these steps once before streaming from Moonlight.
 > [!WARNING]
 > Trusted-subnet auto-pairing (`trusted_subnets`, `trusted_subnet_auto_pairing`)
 > skips the PIN for clients on listed CIDR ranges. Use only on networks you fully
-> control. See [SolarFlare configuration](docs/CONFIGURATION.md#trusted_subnets).
+> control. See [SolarFlare configuration](docs/CONFIGURATION.md#trusted-subnets-and-auto-pairing).
 
 Step-by-step pairing flows, firewall rules, and client-specific notes live in
 [Getting started - SolarFlare on Linux](docs/getting_started.md#solarflare-on-linux-first-run).

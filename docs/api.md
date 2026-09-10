@@ -235,7 +235,7 @@ Liveness probe for load balancers and containers.
 {
   "status": "ok",
   "status_code": 200,
-  "version": "2026.824.1",
+  "version": "2026.909.1",
   "uptime": 3600
 }
 ```
@@ -568,7 +568,7 @@ extensions (audio FX, headless mode, adaptive bitrate, trusted subnets).
 {
   "status": true,
   "platform": "Linux",
-  "version": "2026.824.1",
+  "version": "2026.909.1",
   "locale": "en",
   "port": "47989",
   "adaptive_bitrate_enabled": "enabled"

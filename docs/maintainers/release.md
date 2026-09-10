@@ -37,8 +37,8 @@ Examples below use placeholder *next* values so commands stay copy-paste templat
 
 | Role | Format | Example | Used for |
 |---|---|---|---|
-| **Display version** | SemVer `MAJOR.MINOR.PATCH` | `1.2.2` | GitHub release **title**, README shield, user-facing changelog headings |
-| **Build version** | Chronological `YYYY.MDD.REVISION` | `2026.824.1` | CMake `PROJECT_VERSION`, Python package version, `sunshine --version`, compatibility **git tag** |
+| **Display version** | SemVer `MAJOR.MINOR.PATCH` | `1.3.0` | GitHub release **title**, README shield, user-facing changelog headings |
+| **Build version** | Chronological `YYYY.MDD.REVISION` | `2026.909.1` | CMake `PROJECT_VERSION`, Python package version, `sunshine --version`, compatibility **git tag** |
 
 ### Git tag
 
@@ -46,7 +46,7 @@ Examples below use placeholder *next* values so commands stay copy-paste templat
 v<build-version>-solarflare
 ```
 
-Example: `v2026.824.1-solarflare`
+Example: `v2026.909.1-solarflare`
 
 - Tags **with** the `-solarflare` suffix are fork compatibility releases.
 - Upstream-style tags without the suffix are **excluded** from
@@ -468,7 +468,7 @@ sudo setcap 'cap_sys_admin,cap_sys_nice+p' /path/to/sunshine
 - …
 - …
 
-**Full changelog:** compare `v2026.824.1-solarflare`…`v2026.824.2-solarflare` on GitHub.
+**Full changelog:** compare `v2026.824.1-solarflare`…`v2026.909.1-solarflare` on GitHub.
 ```
 
 ---

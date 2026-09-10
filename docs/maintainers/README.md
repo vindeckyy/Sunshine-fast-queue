@@ -44,8 +44,8 @@ SolarFlare intentionally carries **two** version identifiers:
 
 | Identifier | Example | Where it appears |
 |---|---|---|
-| **Display version** (SemVer) | `1.2.2` | GitHub release **title** (`SolarFlare v1.2.2`), README badge, user-facing copy |
-| **Build version** (chronological) | `2026.824.1` | `CMakeLists.txt`, `pyproject.toml`, `uv.lock`, embedded `sunshine --version`, compatibility **tag** |
+| **Display version** (SemVer) | `1.3.0` | GitHub release **title** (`SolarFlare v1.3.0`), README badge, user-facing copy |
+| **Build version** (chronological) | `2026.909.1` | `CMakeLists.txt`, `pyproject.toml`, `uv.lock`, embedded `sunshine --version`, compatibility **tag** |
 
 Git tag format:
 
@@ -53,7 +53,7 @@ Git tag format:
 v<build-version>-solarflare
 ```
 
-Example: `v2026.824.1-solarflare`
+Example: `v2026.909.1-solarflare`
 
 The executable and Moonlight compatibility layer report the **build version**.
 Users browsing GitHub releases see the **display version** in the title.

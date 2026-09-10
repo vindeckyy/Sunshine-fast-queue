@@ -172,7 +172,7 @@ Each log line is JSON: `{"ts":"...","level":"...","msg":"..."}`. See
 | Guide | Document |
 |---|---|
 | GameStream → SolarFlare | [gamestream_migration.md](gamestream_migration.md) |
-| Sunshine → SolarFlare (same PC) | [gamestream_migration.md#migrating-from-upstream-sunshine](gamestream_migration.md#migrating-from-upstream-sunshine) |
+| Sunshine → SolarFlare (same PC) | [gamestream_migration.md#behavioral-differences-from-gamestream](gamestream_migration.md#behavioral-differences-from-gamestream) |
 | In-place release update | [README - update](../README.md#update-an-existing-installation) |
 | Distro port / manual build | [PORTING.md](PORTING.md) |
 | GSMS app import | [gamestream_migration.md#automated-migration-with-gsms](gamestream_migration.md#automated-migration-with-gsms) |

@@ -186,7 +186,7 @@ export const DOC_CATEGORIES: DocCategory[] = [
       {
         slug: 'changelog',
         title: 'Changelog & Releases',
-        badge: 'v1.2.2',
+        badge: 'v1.3.0',
         description: 'Chronological history of SolarFlare releases, cherry-picks, and enhancements.',
       },
       {
@@ -213,10 +213,10 @@ export const DOC_ARTICLES: Record<string, DocArticle> = {
     slug: 'getting-started',
     title: 'Installation & Quickstart',
     category: 'Getting Started',
-    badge: 'v1.2.2',
+    badge: 'v1.3.0',
     description: 'Install SolarFlare on your Linux host, configure permissions, and pair Moonlight streaming clients.',
     readTime: '6 min read',
-    lastUpdated: 'August 2026',
+    lastUpdated: 'September 2026',
     sections: [
       {
         id: 'overview',
@@ -1004,7 +1004,7 @@ net.ipv4.tcp_congestion_control = bbr`,
             path: '/api/health',
             auth: 'Unauthenticated',
             description: 'Health check endpoint for container orchestrators and load balancers.',
-            responseBody: `{\n  "status": "ok",\n  "status_code": 200,\n  "version": "2026.824.1",\n  "uptime": 3600\n}`,
+            responseBody: `{\n  "status": "ok",\n  "status_code": 200,\n  "version": "2026.909.1",\n  "uptime": 3600\n}`,
           },
         ],
       },
@@ -1341,16 +1341,22 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
     slug: 'changelog',
     title: 'SolarFlare Changelog',
     category: 'Project & Release',
-    badge: 'v1.2.2',
+    badge: 'v1.3.0',
     description: 'Chronological release notes, performance upgrades, and upstream compatibility syncs.',
     readTime: '8 min read',
-    lastUpdated: 'August 2026',
+    lastUpdated: 'September 2026',
     sections: [
       {
         id: 'releases',
         title: 'Release notes',
         content: 'Select a version tab. Full GitHub compare links live on each release.',
         tabs: [
+          {
+            id: 'v130',
+            label: 'v1.3.0',
+            content:
+              '**Build** `v2026.909.1-solarflare`\n\n- **Input seat isolation:** `input_seat` config key routes virtual devices to a systemd-logind seat via udev `ID_SEAT` + `EVIOCGRAB` hardening (Discussion #20)\n- **libudev integration:** CMake `FindUdev` detection, compile-out safe\n- **Fallback udev rule:** Shipped `99-solarflare-seat.rules` for locked-down hosts\n- **Web UI:** New Input Seat field in the Inputs tab\n- **Tests:** 703 passed, 95.9% coverage on changed lines\n- **CUDA:** Built with CUDA 13.4 (architectures 75–121)',
+          },
           {
             id: 'v122',
             label: 'v1.2.2',
@@ -1407,7 +1413,7 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
         table: {
           headers: ['Version', 'Supported', 'Patch Cadence'],
           rows: [
-            ['Latest 1.2.x release', 'Yes', 'Immediate security patches & hotfixes'],
+            ['Latest 1.3.x release', 'Yes', 'Immediate security patches & hotfixes'],
             ['master branch', 'Yes', 'Continuous rolling security updates'],
             ['Older 1.x releases', 'Best Effort', 'Supported until the next minor release'],
             ['Pre-1.0 tags', 'No', 'Unsupported legacy releases'],
@@ -1488,7 +1494,7 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
         id: 'versioning-rules',
         title: 'Dual Version Identifiers',
         content:
-          '- **Release Title:** SemVer (e.g. \`SolarFlare v1.2.2\`).\n- **Compatibility Build Version:** \`v<YYYY>.<MDD>.<rev>-solarflare\` (e.g. \`v2026.824.1-solarflare\`).',
+          '- **Release Title:** SemVer (e.g. \`SolarFlare v1.3.0\`).\n- **Compatibility Build Version:** \`v<YYYY>.<MDD>.<rev>-solarflare\` (e.g. \`v2026.909.1-solarflare\`).',
       },
       {
         id: 'tagging-steps',
@@ -1500,7 +1506,7 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
             label: 'Dry run',
             code: {
               language: 'bash',
-              code: './scripts/release.sh 2026.824.1 1.2.2 --dry-run',
+              code: './scripts/release.sh 2026.909.1 1.3.0 --dry-run',
             },
           },
           {
@@ -1508,7 +1514,7 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
             label: 'Tag locally',
             code: {
               language: 'bash',
-              code: './scripts/release.sh 2026.824.1 1.2.2 --no-push',
+              code: './scripts/release.sh 2026.909.1 1.3.0 --no-push',
             },
           },
           {
@@ -1516,14 +1522,14 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
             label: 'Publish',
             code: {
               language: 'bash',
-              code: `gh release create v2026.824.1-solarflare \\
+              code: `gh release create v2026.909.1-solarflare \\
   sunshine-x86_64 \\
   solarflare-linux-x86_64.tar.gz \\
   SHA256SUMS \\
   --repo vindeckyy/Solar-Flare \\
   --verify-tag \\
   --latest \\
-  --title 'SolarFlare v1.2.2' \\
+  --title 'SolarFlare v1.3.0' \\
   --notes-file release-notes.md`,
             },
           },

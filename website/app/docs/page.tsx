@@ -79,7 +79,7 @@ export default function DocsPortalPage() {
             <span className="rounded-md bg-primary/10 border border-primary/20 px-2.5 py-1 font-mono text-xs font-semibold text-primary uppercase tracking-wider">
               Official Documentation
             </span>
-            <span className="text-xs font-mono text-muted-foreground">v1.2.2 · Linux Host</span>
+            <span className="text-xs font-mono text-muted-foreground">v1.3.0 · Linux Host</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground text-balance">
