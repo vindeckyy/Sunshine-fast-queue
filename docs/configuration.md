@@ -689,6 +689,64 @@ backend selection recipes. }
     </tr>
 </table>
 
+### input_seat
+<table>
+    <tr>
+        <td>Description</td>
+        <td colspan="2">
+            systemd-logind seat name to assign to virtual input devices (Linux only).
+            When set to a non-default seat (for example @code{}seat1@endcode),
+            SolarFlare appends the seat name to each virtual device name, writes a
+            transient udev rule in @code{}/run/udev/rules.d/99-solarflare-seat.rules@endcode,
+            and synthesizes a @code{}change@endcode uevent so the devices are assigned
+            to the chosen seat. Seat isolation also acquires an exclusive
+            @code{}EVIOCGRAB@endcode on same-seat event nodes for hardening.
+            <br>
+            <br>
+            Leave empty to follow the @code{}XDG_SEAT@endcode environment variable.
+            Set to @code{}seat0@endcode or leave empty to disable seat isolation.
+        </td>
+    </tr>
+    <tr>
+        <td>Default</td>
+        <td colspan="2">Empty. Follows the @code{}XDG_SEAT@endcode environment variable; if that is also unset, seat isolation is disabled.</td>
+    </tr>
+    <tr>
+        <td>Example</td>
+        <td colspan="2">@code{}
+            input_seat = seat1
+            @endcode</td>
+    </tr>
+    <tr>
+        <td>Platform notes</td>
+        <td colspan="2">
+            Linux only. Runtime udev rule injection is the primary path; it requires
+            @code{}/run/udev/rules.d@endcode to be writable. If runtime injection is
+            unavailable, copy the shipped fallback file
+            @code{}src_assets/linux/misc/99-solarflare-seat.rules@endcode to
+            @code{}/etc/udev/rules.d/99-solarflare-seat.rules@endcode, edit the seat
+            literal, and reload with @code{}udevadm control --reload-rules@endcode.
+        </td>
+    </tr>
+    <tr>
+        <td>Prerequisites</td>
+        <td colspan="2">
+            The target seat must exist and usually needs a display or input device
+            attached before applications start. Create it with
+            @code{}sudo loginctl seat-add seat1 /sys/bus/pci/devices/.../drm/card?@endcode
+            (or the equivalent for your hardware) and attach input/output devices.
+        </td>
+    </tr>
+    <tr>
+        <td>Interactions</td>
+        <td colspan="2">
+            Precedence is @code{}input_seat@endcode &gt; @code{}XDG_SEAT@endcode
+            environment variable &gt; empty (no isolation). Only non-default seats
+            trigger routing and @code{}EVIOCGRAB@endcode.
+        </td>
+    </tr>
+</table>
+
 ### back_button_timeout
 <table>
     <tr>

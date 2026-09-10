@@ -9,6 +9,22 @@ Curated sections below group commits by feature and date, oldest commit first wi
 
 
 
+## 2026-09-09: SolarFlare v1.3.0 (`v2026.909.1-solarflare`)
+
+### Linux input seat isolation
+
+- New `input_seat` config key assigns virtual mouse, keyboard, touch, pen, and
+  gamepad devices to a non-default systemd-logind seat (for example `seat1`).
+- Seat resolution precedence is `input_seat` > `XDG_SEAT` > empty/`seat0`
+  (no isolation).
+- Runtime udev rule injection writes `/run/udev/rules.d/99-solarflare-seat.rules`
+  and synthesizes a `change` uevent per device node. A shipped fallback rule
+  (`src_assets/linux/misc/99-solarflare-seat.rules`) can be installed manually
+  on hosts where `/run/udev` is read-only.
+- Same-seat hardening via exclusive `EVIOCGRAB` on virtual event devices.
+- The target seat must exist (`loginctl seat-add`) and have a display or input
+  device attached before streaming.
+
 ## 2026-08-24: SolarFlare v1.2.2 (`v2026.824.1-solarflare`)
 
 Release notes are published with the corresponding GitHub release. Compare this tag with the previous SolarFlare release for the complete change set.

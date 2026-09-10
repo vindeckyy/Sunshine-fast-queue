@@ -9,7 +9,7 @@
 if(NOT WIN32)
     find_package(PkgConfig QUIET)
     if(PKG_CONFIG_FOUND)
-        pkg_check_modules(UDEV "udev")
+        pkg_check_modules(UDEV "libudev")
     endif()
 
     if(UDEV_FOUND)

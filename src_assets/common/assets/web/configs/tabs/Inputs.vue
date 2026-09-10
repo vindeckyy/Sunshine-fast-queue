@@ -20,6 +20,13 @@ const props = defineProps([
               default="true"
     ></Checkbox>
 
+    <!-- Input seat isolation (Linux only) -->
+    <div class="mb-3" v-if="platform === 'linux'">
+      <label for="input_seat" class="form-label">{{ $t('config.input_seat') }}</label>
+      <input type="text" class="form-control" id="input_seat" v-model="config.input_seat" />
+      <div class="form-text">{{ $t('config.input_seat_desc') }}</div>
+    </div>
+
     <!-- Emulated Gamepad Type -->
     <div class="mb-3" v-if="config.controller === 'enabled' && platform !== 'macos'">
       <label for="gamepad" class="form-label">{{ $t('config.gamepad') }}</label>

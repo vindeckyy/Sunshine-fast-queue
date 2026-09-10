@@ -421,6 +421,16 @@ namespace config {
 
     bool high_resolution_scrolling;
     bool native_pen_touch;
+
+    /**
+     * Systemd-logind seat name for virtual input device isolation.
+     *
+     * When non-empty and not "seat0", all virtual input devices (mouse,
+     * keyboard, touch, pen, gamepads) are assigned to this seat via udev
+     * ID_SEAT and an exclusive EVIOCGRAB is taken on each device fd.
+     * Empty string follows XDG_SEAT; "seat0" explicitly disables isolation.
+     */
+    std::string input_seat;
   };
 
   namespace flag {
