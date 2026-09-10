@@ -148,7 +148,7 @@ namespace {
   // ---------------------------------------------------------------------
   // The struct's field defaults must stay consistent with the
   // documented ranges (catches drift if someone touches the header
-  // without updating docs/configuration.md).
+  // without updating docs/configuration.md contract + website /docs/configuration).
   // ---------------------------------------------------------------------
 
   TEST_F(VaapiConfigTest, DefaultsAreInsideDocumentedRanges) {

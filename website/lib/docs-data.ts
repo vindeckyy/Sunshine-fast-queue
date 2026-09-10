@@ -104,6 +104,12 @@ export const DOC_CATEGORIES: DocCategory[] = [
         title: 'GameStream Migration',
         description: 'Migrate existing NVIDIA GameStream setups and library configurations to SolarFlare.',
       },
+      {
+        slug: 'guides',
+        title: 'Operator Guides',
+        badge: 'How-to',
+        description: 'Curated LAN baseline, low-latency, headless, multi-GPU, HDR, per-client, webhook, and logging how-tos.',
+      },
     ],
   },
   {
@@ -176,6 +182,11 @@ export const DOC_CATEGORIES: DocCategory[] = [
         title: 'Building from Source',
         description: 'Compiling with CMake, developer build profiles, testing with GoogleTest.',
       },
+      {
+        slug: 'third-party-packages',
+        title: 'Dependencies & Third-Party',
+        description: 'Bundled submodules, FFmpeg prebuilt pins, Flatpak versions, and community-package warnings.',
+      },
     ],
   },
   {
@@ -203,6 +214,21 @@ export const DOC_CATEGORIES: DocCategory[] = [
         slug: 'release-process',
         title: 'Maintainer Release Guide',
         description: 'Standard operating procedure for creating tags, verifying binaries, and publishing.',
+      },
+      {
+        slug: 'legal',
+        title: 'Legal & Licensing',
+        description: 'GPL-3.0 operator summary, trademarks, codec patents, redistribution checklist, and privacy.',
+      },
+      {
+        slug: 'ecosystem',
+        title: 'Ecosystem & Upstream',
+        description: 'Awesome-Sunshine catalog, upstream changelog feed, and SolarFlare vs upstream history.',
+      },
+      {
+        slug: 'maintainers',
+        title: 'Maintainer Handbook',
+        description: 'Triage duties, dual versioning, artifact contracts, CI scope, and new-maintainer handoff.',
       },
     ],
   },
@@ -378,7 +404,7 @@ sudo nft add rule inet filter input udp dport 47998-48000 accept`,
         id: 'host-tunables',
         title: 'Fork Host Tunables',
         content:
-          'Switch tabs to browse network, scheduling, capture, and access keys. Full prose lives in docs/CONFIGURATION.md.',
+          'Switch tabs to browse network, scheduling, capture, and access keys. Full fork prose lives in the sections below; inherited upstream keys are summarized in the Developer articles.',
         tabs: [
           {
             id: 'network',
@@ -511,7 +537,7 @@ sudo nft add rule inet filter input udp dport 47998-48000 accept`,
         ],
         callout: {
           type: 'important',
-          text: 'Inherited upstream keys are in docs/configuration.md. Fork keys are in docs/CONFIGURATION.md.',
+          text: 'Inherited upstream keys are summarized in Building / Porting. Fork keys are fully documented in the sections on this page.',
         },
       },
       {
@@ -1076,7 +1102,7 @@ net.ipv4.tcp_congestion_control = bbr`,
             id: 'nixos',
             label: 'NixOS',
             content:
-              'Use the repository Nix shell and the declarative host settings in docs/PORTING.md. Do not mix apt/dnf packages.',
+              'Use the repository Nix shell and the declarative host settings in the Porting article. Do not mix apt/dnf packages.',
           },
         ],
       },
@@ -1487,8 +1513,8 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
     category: 'Project & Release',
     badge: 'Maintainer',
     description: 'Step-by-step SOP for version tagging, artifact compilation, checksumming, and GitHub releases.',
-    readTime: '4 min read',
-    lastUpdated: 'August 2026',
+    readTime: '8 min read',
+    lastUpdated: 'September 2026',
     sections: [
       {
         id: 'versioning-rules',
@@ -1497,9 +1523,35 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
           '- **Release Title:** SemVer (e.g. \`SolarFlare v1.3.0\`).\n- **Compatibility Build Version:** \`v<YYYY>.<MDD>.<rev>-solarflare\` (e.g. \`v2026.909.1-solarflare\`).',
       },
       {
+        id: 'artifacts',
+        title: 'Release artifacts',
+        table: {
+          headers: ['Asset', 'Contents', 'Consumer'],
+          rows: [
+            ['sunshine-x86_64', 'Stripped ELF executable (compatibility name)', 'Manual binary swap'],
+            ['solarflare-linux-x86_64.tar.gz', 'Executable, runtime layout, Web UI assets, icon, license', 'Web UI in-app updater'],
+            ['SHA256SUMS', 'Checksums for both files above', 'Updater integrity verification'],
+          ],
+        },
+        callout: {
+          type: 'caution',
+          text: 'GitHub Actions must not build release binaries. Artifacts are produced locally from a clean, tagged tree. Raw GitHub executables cannot retain Linux capabilities — instruct users to run setcap after download for KMS capture.',
+        },
+      },
+      {
+        id: 'prerequisites',
+        title: 'Prerequisites and prepare',
+        content:
+          'Requires a clean tree, master synced with origin/master, git identity, gh authenticated to vindeckyy/Solar-Flare, a Linux x86-64 toolchain, and Web UI + tests verified locally. Before tagging: sync branch, choose next display + build versions, verify quality gates, confirm git status is empty, and draft release-notes.md with exact asset filenames plus the update-only CAUTION callout.',
+        code: {
+          language: 'bash',
+          code: 'git checkout master\ngit pull origin master\ngit status --short\ncmake --build cmake-build-release-prep --target test_sunshine -j2\n./cmake-build-release-prep/tests/test_sunshine --gtest_brief=1',
+        },
+      },
+      {
         id: 'tagging-steps',
         title: 'Release Workflow Commands',
-        content: 'Use --dry-run first. Push only after local verification.',
+        content: 'Use --dry-run first. Push only after local verification. The script updates CMakeLists.txt, pyproject.toml, uv.lock, README metadata, prepends the website changelog entry, commits, tags, and optionally pushes.',
         tabs: [
           {
             id: 'dry',
@@ -1535,6 +1587,22 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
           },
         ],
       },
+      {
+        id: 'verify',
+        title: 'Build, verify, and publish',
+        content:
+          'Build from the final tagged commit with embedded identity (BRANCH, BUILD_VERSION, COMMIT), strip the executable into release-artifacts/, assemble the tarball mirroring the previous layout, generate SHA256SUMS, verify with sha256sum -c, push commit + tag only after verification, then gh release create with --verify-tag --latest --title --notes-file. Post-publish: confirm non-draft with all three assets, download into a clean directory, re-verify checksums, smoke-test --version, and optionally trigger in-app update on staging.',
+        code: {
+          language: 'bash',
+          code: 'export BRANCH=master BUILD_VERSION=2026.909.1 COMMIT=$(git rev-parse HEAD)\ncmake -S . -B cmake-build-release -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_DOCS=OFF\ncmake --build cmake-build-release --target sunshine web-ui -j2\nmkdir -p release-artifacts\nstrip -o release-artifacts/sunshine-x86_64 cmake-build-release/sunshine\ncd release-artifacts\nsha256sum sunshine-x86_64 solarflare-linux-x86_64.tar.gz > SHA256SUMS\nsha256sum -c SHA256SUMS',
+        },
+      },
+      {
+        id: 'rollback',
+        title: 'Rollback, hotfix, and notes template',
+        content:
+          'Prefer forward fixes: land the fix on master with tests, cut a new build version (never reuse a published one), publish new assets. Do not force-push tags users may have downloaded. Release notes must include the update-only CAUTION, an Assets table, setcap recovery snippet, Changes list, and a full compare link.',
+      },
     ],
   },
 
@@ -1546,7 +1614,7 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
     description:
       'SolarFlare does not publish a container image. This page covers upstream Sunshine images and experimental compose.',
     readTime: '6 min read',
-    lastUpdated: 'August 2026',
+    lastUpdated: 'September 2026',
     sections: [
       {
         id: 'policy',
@@ -1557,6 +1625,26 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
           type: 'caution',
           text: 'KMS capture, SCHED_RR pinning, and GPU governors often fail inside namespaces. Expect portal or X11 capture in containers.',
         },
+      },
+      {
+        id: 'when-containers',
+        title: 'When containers make sense',
+        table: {
+          headers: ['Scenario', 'Recommendation'],
+          rows: [
+            ['Quick upstream Sunshine smoke test', 'Upstream image OK with caveats below'],
+            ['Production SolarFlare host on Linux', 'Source install — not Docker'],
+            ['Homelab media server with GPU passthrough', 'Custom Dockerfile possible; expect manual tuning'],
+            ['Kubernetes / orchestrated gaming', 'See Games on Whales; not SolarFlare-maintained'],
+            ['CI compile-only builds', 'Use scripts/linux_build.sh Docker builder, not runtime image'],
+          ],
+        },
+      },
+      {
+        id: 'image-tags',
+        title: 'Image tags',
+        content:
+          'Container tags combine a version channel and OS suffix. Bare tags such as `latest`, `master`, or `vX.X.X` are not complete image tags. Always use `<SUNSHINE_VERSION>-<SUNSHINE_OS>`, for example `latest-ubuntu-24.04`. Browse tags on [Docker Hub](https://hub.docker.com/r/lizardbyte/sunshine/tags) and [GHCR](https://github.com/LizardByte/Sunshine/pkgs/container/sunshine/versions).',
       },
       {
         id: 'run',
@@ -1608,6 +1696,322 @@ cmake --build cmake-build-release --target test_sunshine -j$(nproc)
             },
           },
         ],
+      },
+      {
+        id: 'volumes-ports',
+        title: 'Ports, volumes, and PUID/PGID',
+        content:
+          'Persist pairing certificates, `sunshine.conf`, and `apps.json` with `-v /path/on/host/sunshine-config:/config` (native installs use `~/.config/sunshine/`). Required ports: TCP 47984–47990 plus 48010, UDP 47998–48000. Set `PUID`/`PGID` to match the host config owner; `chown -R` the volume if you change IDs after first run. `amd64` and `arm64` manifests exist per OS suffix, but SolarFlare release binaries are Linux x86-64 only.',
+      },
+      {
+        id: 'failures',
+        title: 'Common failure modes',
+        table: {
+          headers: ['Symptom', 'Likely cause', 'Mitigation'],
+          rows: [
+            ['Black screen in Moonlight', 'No GPU in container', 'Pass /dev/dri, validate host driver'],
+            ['Web UI unreachable', 'Wrong port map', 'Map host port to container 47990'],
+            ['Pairing lost on recreate', 'Ephemeral /config', 'Persist volume mount'],
+            ['Encoder Function not implemented', 'VA-API/NVENC not visible', 'Driver-matched image; check vainfo/nvidia-smi'],
+            ['Input not working', 'Missing uinput', '--device /dev/uinput, correct groups'],
+            ['High latency vs native', 'No fork tunables in upstream image', 'Build SolarFlare from source on host'],
+          ],
+        },
+      },
+    ],
+  },
+
+  guides: {
+    slug: 'guides',
+    title: 'Operator Guides',
+    category: 'Getting Started',
+    badge: 'How-to',
+    description: 'Curated LAN baseline, low-latency, headless, multi-GPU, HDR, per-client, webhook, and logging how-tos.',
+    readTime: '9 min read',
+    lastUpdated: 'September 2026',
+    sections: [
+      {
+        id: 'lan-baseline',
+        title: 'LAN streaming baseline',
+        content:
+          'Goal: stable 1080p120 or 4K60 on a wired LAN with default fork settings. Install with `./scripts/linux-install.sh` and enable the user service. Wire the host with Ethernet. Leave fork defaults enabled (`cpu_pinning`, `enet_4mib_buffer`, `busy_poll_us`, `dscp_qos`). In Moonlight set bitrate to ~80% of measured iPerf throughput. Run `iperf3` per the Troubleshooting network test.',
+        callout: {
+          type: 'tip',
+          text: 'If the host NIC is 2.5 GbE but the client is 1 GbE, set `rate_cap_pct = 80` or lower to avoid buffer overruns.',
+        },
+      },
+      {
+        id: 'competitive',
+        title: 'Competitive low-latency profile',
+        content: 'Add to `~/.config/sunshine/sunshine.conf`, plus per-game NVENC override in `apps.json`. Disable V-Sync in-game; cap Moonlight bitrate only if packet loss appears.',
+        code: {
+          language: 'ini',
+          code: 'latency_mode = aggressive\nbusy_poll_us = 75\npipewire_latency_ms = 4\ncpu_pinning = true\nnvenc_tuning_preset = 0',
+        },
+        callout: {
+          type: 'warning',
+          text: '`latency_mode = aggressive` trades some visual quality on software scaling paths. Test before using in single-player titles.',
+        },
+      },
+      {
+        id: 'headless-ssh',
+        title: 'Headless and SSH access',
+        content:
+          'Path 1 — virtual display (fork): `headless_virtual_display = true` with `headless_width/headless_height/headless_refresh`. Path 2 — dummy plug for NVIDIA stable modes with a normal graphical session. Path 3 — SSH into an existing X11 session: `ssh user@host \'export DISPLAY=:0; sunshine\'`.',
+        callout: {
+          type: 'caution',
+          text: 'Do not run two `sunshine` instances. Stop the systemd user service before foreground debugging.',
+        },
+      },
+      {
+        id: 'multi-gpu',
+        title: 'Multi-GPU workstations',
+        table: {
+          headers: ['Step', 'Action'],
+          rows: [
+            ['1', "Identify GPUs: lspci | grep -E 'VGA|3D' and nvidia-smi"],
+            ['2', 'Plug the monitor (or dummy) into the GPU you want to capture'],
+            ['3', 'Launch games on that GPU (DRI_PRIME=1, prime-run, or BIOS mux)'],
+            ['4', 'In Web UI, set display adapter / output if multiple heads are visible'],
+            ['5', 'Enable gpu_governor = true for AMD; install redesign nvidia-clock-lock for NVIDIA'],
+          ],
+        },
+      },
+      {
+        id: 'hdr',
+        title: 'HDR on Linux (experimental)',
+        content:
+          'Requires KMS capture, an HDR compositor (KDE Plasma 6, Gamescope), HEVC Main 10 or AV1 10-bit encoder (VAAPI on AMD/Intel), HDR enabled in host OS and Moonlight client, and an EDID emulator or HDR-capable display on host.',
+      },
+      {
+        id: 'per-client',
+        title: 'Per-client household profiles',
+        content: 'Use `client_profile_<identifier>` in `sunshine.conf`. The identifier matches the paired client name from the Web UI PIN / clients list.',
+        code: {
+          language: 'ini',
+          code: 'client_profile_living-room-tv = {"max_bitrate": 150000, "hevc_mode": 1}\nclient_profile_phone = {"max_bitrate": 20000, "width": 1280, "height": 720}',
+        },
+      },
+      {
+        id: 'webhooks-logging',
+        title: 'Webhooks and structured logging',
+        content:
+          'Notify Home Assistant or Discord on stream start/stop with `webhook_secret` + `webhook_url_0`, verifying `X-Solarflare-Signature`. For observability: `SUNSHINE_LOG_JSON=1 systemctl --user restart app-dev.lizardbyte.app.Sunshine.service`, then `journalctl --user -u app-dev.lizardbyte.app.Sunshine.service -f`.',
+        code: {
+          language: 'ini',
+          code: 'webhook_secret = your-hmac-secret\nwebhook_url_0 = https://example.com/hooks/solarflare',
+        },
+      },
+      {
+        id: 'platform-support',
+        title: 'Platform support',
+        content:
+          'Linux x86-64 is primary via `./scripts/linux-install.sh`. Other-arch Linux may build but is not release-tested. Windows / macOS / FreeBSD paths install upstream Sunshine unless you build this repository yourself on that platform.',
+        table: {
+          headers: ['Platform', 'SolarFlare support'],
+          rows: [
+            ['Linux x86-64', 'Primary; ./scripts/linux-install.sh'],
+            ['Linux (other arch)', 'Source may build; not release-tested'],
+            ['Windows / macOS', 'Inherited code; use upstream Sunshine releases'],
+            ['FreeBSD', 'Inherited upstream packages only'],
+          ],
+        },
+      },
+    ],
+  },
+
+  'third-party-packages': {
+    slug: 'third-party-packages',
+    title: 'Dependencies & Third-Party Packages',
+    category: 'Developer & API',
+    badge: 'Deps',
+    description: 'Bundled submodules, FFmpeg prebuilt pins, Flatpak versions, and community-package warnings.',
+    readTime: '6 min read',
+    lastUpdated: 'September 2026',
+    sections: [
+      {
+        id: 'submodules',
+        title: 'Bundled git submodules',
+        content:
+          'Initialize before any CMake configure with `git submodule update --init --recursive`. Key paths: `third-party/moonlight-common-c`, `Simple-Web-Server`, `libdisplaydevice`, `tray`, `glad`, `nv-codec-headers`, `nanors`, `wlr-protocols`, `wayland-protocols`, `doxyconfig`, `build-deps`, `lizardbyte-common`, `hermes-kms`, plus optional `googletest`, `inputtino`, `nvapi`, `plasma-wayland-protocols`, `TPCircularBuffer`, `ViGEmClient`. If a directory under `third-party/` is empty, re-run the init for that path; shallow CI clones may need `git fetch --tags` inside `build-deps`.',
+        code: {
+          language: 'bash',
+          code: 'git submodule update --init --recursive\ngit -C third-party/build-deps describe --tags --exact-match',
+        },
+      },
+      {
+        id: 'ffmpeg',
+        title: 'FFmpeg prebuilt binaries',
+        content:
+          'SolarFlare links static FFmpeg libraries from LizardByte/build-deps releases. The tag is read from the `third-party/build-deps` submodule via `cmake/dependencies/ffmpeg.cmake`; checksums are authoritative in `ffmpeg.cmake`. Override with `-DFFMPEG_PREPARED_BINARIES=/path/to/extracted/ffmpeg`. Flatpak may pin a different release in `packaging/linux/flatpak/modules/ffmpeg.json` and builds with `-DFFMPEG_PREPARED_BINARIES=/app/ffmpeg`.',
+      },
+      {
+        id: 'node-flatpak',
+        title: 'Node.js and Flatpak pins',
+        content:
+          'Run `npm install --no-audit --no-fund` before CMake (locks in `package-lock.json`; Vue 3.5, Vite 6, Bootstrap 5). Flatpak uses the Node 20 SDK extension and offline sources via `flatpak-node-generator`. Build-time pins live in `packaging/linux/flatpak/modules/`: CUDA, FFmpeg prebuilt, Boost 1.89.0, nlohmann_json 3.11.3, miniupnpc 2.3.3, KDE Platform 6.10, Freedesktop SDK 25.08.',
+      },
+      {
+        id: 'community',
+        title: 'Community packages (upstream only)',
+        content:
+          'Chocolatey, Scoop, nixpkgs, Solus, and Flathub links install third-party builds of upstream LizardByte Sunshine — not SolarFlare. They do not include the fork Web UI, performance controls, or maintainer support. For SolarFlare use `scripts/linux-install.sh` or GitHub release assets. See `packaging/linux/flatpak/README.md` for a local Flatpak build; published Flathub builds are not SolarFlare.',
+        callout: {
+          type: 'warning',
+          text: 'Community packages install upstream Sunshine, not SolarFlare. Verify the package source before reporting fork issues.',
+        },
+      },
+    ],
+  },
+
+  legal: {
+    slug: 'legal',
+    title: 'Legal & Licensing',
+    category: 'Project & Release',
+    badge: 'GPL-3.0',
+    description: 'GPL-3.0 operator summary, trademarks, codec patents, redistribution checklist, and privacy.',
+    readTime: '5 min read',
+    lastUpdated: 'September 2026',
+    sections: [
+      {
+        id: 'license',
+        title: 'License',
+        content:
+          'SolarFlare is distributed under GNU General Public License v3.0 (GPL-3.0-only). The tree contains work derived from LizardByte/Sunshine and other third-party components, each retaining its own copyright notices where applicable. This page is informational only, not legal advice.',
+        callout: {
+          type: 'caution',
+          text: 'Consult a qualified attorney for questions about using, modifying, or distributing SolarFlare in your jurisdiction.',
+        },
+      },
+      {
+        id: 'relationship',
+        title: 'SolarFlare and Sunshine relationship',
+        table: {
+          headers: ['Aspect', 'Detail'],
+          rows: [
+            ['Copyright', 'SolarFlare fork holders per LICENSE and commit history'],
+            ['Upstream', 'Substantial code lineage from Sunshine (GPL-3.0)'],
+            ['Trademarks', '"SolarFlare" is the fork product name; "Sunshine" and "Moonlight" are third-party marks'],
+            ['Compatibility', 'Binary sunshine, ~/.config/sunshine, service IDs retained for compatibility — not a trademark grant'],
+          ],
+        },
+      },
+      {
+        id: 'gpl',
+        title: 'GPL-3.0 summary for operators',
+        content:
+          'Permitted: private runs without distribution, personal modifications, commercial use of the software itself. Required when you convey the program: provide corresponding source or a written offer, include license and copyright notices, document changes in modified files, and license derivatives under GPL-3.0. Read the full LICENSE text.',
+      },
+      {
+        id: 'redistribution',
+        title: 'Redistribution checklist',
+        content:
+          '1. Source offer matching the binary (or exact tag link). 2. Include LICENSE and preserve notices. 3. Aggregate third-party licenses from third-party/ into NOTICE where required. 4. Do not imply LizardByte, NVIDIA, or Moonlight endorsement. 5. Label forks clearly. 6. Assess H.264/HEVC distribution rules in target regions. Verify SHA256SUMS on repackaged release artifacts.',
+      },
+      {
+        id: 'privacy',
+        title: 'Privacy and data handling',
+        content:
+          'Self-hosted: no mandatory cloud telemetry in the streaming path. Pairing certs and config stay on the host (`~/.config/sunshine/`). Optional `webhook_url_*` sends events you configure to third-party URLs. API tokens are stored hashed; protect `sunshine.conf` permissions. Operators own GDPR, logging, and LAN exposure of the HTTPS Web UI (default 47990). Report vulnerabilities privately via GitHub Security Advisories.',
+      },
+    ],
+  },
+
+  ecosystem: {
+    slug: 'ecosystem',
+    title: 'Ecosystem & Upstream',
+    category: 'Project & Release',
+    badge: 'Upstream',
+    description: 'Awesome-Sunshine catalog, upstream changelog feed, and SolarFlare vs upstream history.',
+    readTime: '4 min read',
+    lastUpdated: 'September 2026',
+    sections: [
+      {
+        id: 'overview',
+        title: 'SolarFlare vs upstream history',
+        table: {
+          headers: ['Document', 'Contents'],
+          rows: [
+            ['Upstream feed (below)', 'LizardByte/Sunshine releases: capture, encode, protocol, cross-platform hosts'],
+            ['Changelog (/docs/changelog)', 'Fork-only features, Linux tuning, Web UI, API scopes'],
+            ['Maintainer handbook (/docs/maintainers)', 'How SolarFlare versions and tags are cut'],
+          ],
+        },
+        callout: {
+          type: 'note',
+          text: 'When triaging a bug, check whether it reproduces on upstream Sunshine. Fork-specific issues (Web UI, solarflare_t keys, pacing) belong to SolarFlare.',
+        },
+      },
+      {
+        id: 'awesome',
+        title: 'Upstream Sunshine ecosystem',
+        content:
+          'SolarFlare stays compatible with Moonlight and much of the Sunshine ecosystem. The independent LizardByte/awesome-sunshine catalog is not maintained or endorsed by SolarFlare and may assume upstream packages, Docker images, or UI behavior. Install SolarFlare via the Quickstart; use fork tunables from Configuration; get clients at moonlight-stream.org. Test community tools (companion apps, scripts, themes) targeting the Moonlight protocol before production use.',
+      },
+      {
+        id: 'feeds',
+        title: 'Live feeds',
+        content:
+          'Upstream changelog: https://raw.githubusercontent.com/LizardByte/Sunshine/changelog/CHANGELOG.md. Ecosystem catalog: https://raw.githubusercontent.com/LizardByte/awesome-sunshine/master/README.md. Both render live on the Doxygen site; the website docs tab curates the SolarFlare-relevant subset above.',
+      },
+    ],
+  },
+
+  maintainers: {
+    slug: 'maintainers',
+    title: 'Maintainer Handbook',
+    category: 'Project & Release',
+    badge: 'Maintainer',
+    description: 'Triage duties, dual versioning, artifact contracts, CI scope, and new-maintainer handoff.',
+    readTime: '6 min read',
+    lastUpdated: 'September 2026',
+    sections: [
+      {
+        id: 'duties',
+        title: 'Maintainer responsibilities',
+        content:
+          '1. Triage issues and PRs against fork scope. 2. Enforce test coverage, Doxygen, and clang-format on merged C++ changes. 3. Cut releases locally per the Release Guide — GitHub Actions does not produce release binaries. 4. Keep dual versioning synchronized across CMake, Python metadata, README, and Git tags. 5. Never publish releases, issues, or PRs under the LizardByte organization for SolarFlare work.',
+      },
+      {
+        id: 'versioning',
+        title: 'Dual versioning',
+        content:
+          'Display version (SemVer, e.g. 1.3.0): GitHub release title, README badge, user-facing copy. Build version (chronological YYYY.MDD.REVISION, e.g. 2026.909.1): CMakeLists.txt, pyproject.toml, uv.lock, embedded sunshine --version, compatibility tag v<build>-solarflare. The executable reports the build version; release titles show the display version.',
+        table: {
+          headers: ['Identifier', 'Example', 'Where it appears'],
+          rows: [
+            ['Display version (SemVer)', '1.3.0', 'GitHub release title, README badge, changelog headings'],
+            ['Build version (chronological)', '2026.909.1', 'CMake PROJECT_VERSION, Python package, --version, git tag'],
+          ],
+        },
+      },
+      {
+        id: 'artifacts',
+        title: 'Release artifacts',
+        table: {
+          headers: ['Asset', 'Purpose'],
+          rows: [
+            ['sunshine-x86_64', 'Stripped executable (compatibility filename) for in-place binary updates'],
+            ['solarflare-linux-x86_64.tar.gz', 'Executable + runtime/Web UI assets + icon + license (Web UI updater path)'],
+            ['SHA256SUMS', 'SHA-256 checksums for both payloads'],
+          ],
+        },
+        callout: {
+          type: 'caution',
+          text: 'Release binaries are for updating an existing SolarFlare install only. New users must build from source with scripts/linux-install.sh.',
+        },
+      },
+      {
+        id: 'ci',
+        title: 'Continuous integration',
+        content:
+          'Fork CI: Web bundle (npm ci + npm run build) and Linux build and tests (linux_build.sh, Xvfb, test_sunshine, gcovr upload). Not run by default: macOS, Windows, FreeBSD, Arch, Homebrew, Flatpak, Copr, upstream release publishing. Those workflows remain inherited but depend on LizardByte-only secrets. CI builds use release_version 0.0.0-ci for health checks, not release fidelity.',
+      },
+      {
+        id: 'handoff',
+        title: 'Handoff checklist',
+        content:
+          'Read CONTRIBUTING and AGENTS. Build from source with scripts/linux-install.sh. Run test_sunshine locally with BUILD_TESTS=ON. Walk through the Release Guide with --dry-run and --no-push. Confirm gh auth for vindeckyy/Solar-Flare. Review the Security Policy disclosure path.',
       },
     ],
   },

@@ -103,7 +103,7 @@ namespace {
     // src/network.cpp, src/stream.cpp, src/platform/linux/pipewire.cpp
     // and src/platform/linux/misc.cpp before the config plumbing was
     // added. This is the "vanilla install behaves identically" guarantee
-    // documented in docs/CONFIGURATION.md.
+    // documented in website /docs/configuration.
     EXPECT_EQ(config::solarflare.busy_poll_us, 50);
     EXPECT_EQ(config::solarflare.rate_cap_pct, 80);
     EXPECT_TRUE(config::solarflare.enet_4mib_buffer);
@@ -144,7 +144,7 @@ namespace {
   // ---------------------------------------------------------------------
   // The struct's field defaults must stay consistent with the
   // documented ranges (catches drift if someone touches the header
-  // without updating the README + docs/CONFIGURATION.md).
+  // without updating the README + website /docs/configuration).
   // ---------------------------------------------------------------------
 
   TEST_F(SolarflareConfigTest, DefaultsAreInsideDocumentedRanges) {

@@ -16,7 +16,8 @@
 # Side effects:
 #   1. Updates CMakeLists.txt, pyproject.toml, and uv.lock.
 #   2. Updates the README display version and compatibility build tag.
-#   3. Prepends a release section to docs/CHANGELOG-SolarFlare.md.
+#   3. Prepends a release section to the website changelog
+#      (website/lib/docs-data.ts, slug 'changelog').
 #   4. Creates a release commit and annotated compatibility tag.
 #   5. Pushes the commit and tag unless --no-push is supplied.
 
@@ -150,7 +151,7 @@ fi
 echo "✓ README.md"
 
 TODAY="$(date -u +%Y-%m-%d)"
-if [[ "$DRY_RUN" == false ]] && ! grep -q "v${BUILD_VERSION}-solarflare" docs/CHANGELOG-SolarFlare.md; then
+if [[ "$DRY_RUN" == false ]] && ! grep -q "v${BUILD_VERSION}-solarflare" website/lib/docs-data.ts; then
   BUILD_VERSION="$BUILD_VERSION" DISPLAY_VERSION="$DISPLAY_VERSION" TODAY="$TODAY" python3 - <<'PY'
 import os
 import pathlib
@@ -158,23 +159,30 @@ import pathlib
 build = os.environ["BUILD_VERSION"]
 display = os.environ["DISPLAY_VERSION"]
 today = os.environ["TODAY"]
-path = pathlib.Path("docs/CHANGELOG-SolarFlare.md")
-lines = path.read_text().splitlines(keepends=True)
-insert_at = next((i for i, line in enumerate(lines) if i > 0 and line.startswith("## ")), len(lines))
-lines.insert(
-    insert_at,
-    f"\n## {today}: SolarFlare v{display} (`v{build}-solarflare`)\n\n"
+path = pathlib.Path("website/lib/docs-data.ts")
+source = path.read_text()
+marker = "        tabs: [\n          {\n            id: 'v130',"
+assert marker in source, "website changelog tabs marker not matched"
+entry = (
+    "        tabs: [\n"
+    "          {\n"
+    f"            id: 'v{display.replace('.', '')}',\n"
+    f"            label: 'v{display}',\n"
+    "            content:\n"
+    f"              '**Build** `v{build}-solarflare` ({today})\\n\\n"
     "Release notes are published with the corresponding GitHub release. "
-    "Compare this tag with the previous SolarFlare release for the complete change set.\n\n",
+    "Compare this tag with the previous SolarFlare release for the complete change set.',\n"
+    "          },\n"
 )
-path.write_text("".join(lines))
+source = source.replace(marker, entry + "          {\n            id: 'v130',", 1)
+path.write_text(source)
 PY
 fi
-echo "✓ CHANGELOG"
+echo "✓ CHANGELOG (website/lib/docs-data.ts)"
 
 TAG="v${BUILD_VERSION}-solarflare"
 if [[ "$DRY_RUN" == false ]]; then
-  git add CMakeLists.txt pyproject.toml uv.lock README.md docs/CHANGELOG-SolarFlare.md
+  git add CMakeLists.txt pyproject.toml uv.lock README.md website/lib/docs-data.ts
   git commit -m "release: SolarFlare v${DISPLAY_VERSION} (build ${BUILD_VERSION})"
   git tag -a "$TAG" -m "SolarFlare v${DISPLAY_VERSION}"
 fi

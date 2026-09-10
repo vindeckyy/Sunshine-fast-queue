@@ -334,7 +334,7 @@ namespace {
   // ---------------------------------------------------------------------
   // The struct's field defaults must stay consistent with the
   // documented ranges (catches drift if someone touches the header
-  // without updating the README + docs/CONFIGURATION.md).
+  // without updating the README + website /docs/configuration).
   // ---------------------------------------------------------------------
 
   TEST_F(NvencTuningTest, DefaultsAreInsideDocumentedRanges) {

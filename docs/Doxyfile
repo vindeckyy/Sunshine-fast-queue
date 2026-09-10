@@ -36,26 +36,14 @@ PREDEFINED += SUNSHINE_BUILD_WAYLAND
 PREDEFINED += SUNSHINE_TRAY=1
 
 # files and directories to process
+# User/operator guides live on the website docs tab
+# (https://vindeckyy.github.io/Solar-Flare/docs) and are no longer
+# duplicated as Markdown in this directory, with one exception:
+# configuration.md stays as the machine-readable contract for
+# tests/integration/test_config_consistency.cpp plus Doxygen input.
 USE_MDFILE_AS_MAINPAGE = ../README.md
 INPUT = ../README.md \
-        getting_started.md \
-        CHANGELOG-SolarFlare.md \
-        changelog.md \
-        ../DOCKER_README.md \
-        third_party_packages.md \
-        gamestream_migration.md \
-        legal.md \
-        CONFIGURATION.md \
         configuration.md \
-        PORTING.md \
-        app_examples.md \
-        awesome_sunshine.md \
-        guides.md \
-        performance_tuning.md \
-        api.md \
-        troubleshooting.md \
-        building.md \
-        contributing.md \
         ../third-party/doxyconfig/docs/source_code.md \
         ../src
 

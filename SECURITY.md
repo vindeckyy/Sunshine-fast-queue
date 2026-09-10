@@ -19,7 +19,7 @@ fixes land on `master` and are included in the next tagged release.
 | `master` | **Yes** | Rolling development; may include unreleased fixes |
 | Older `1.x` releases | Best effort | Upgrade when practical; no backport guarantee |
 | Pre-`1.0` tags | **No** | Unsupported |
-| Upstream Sunshine tags consumed by the fork | Inherited | Cherry-picked fixes tracked in [docs/CHANGELOG-SolarFlare.md](docs/CHANGELOG-SolarFlare.md) |
+| Upstream Sunshine tags consumed by the fork | Inherited | Cherry-picked fixes tracked in [changelog](https://vindeckyy.github.io/Solar-Flare/docs/changelog) |
 
 ### Build identifiers
 
@@ -86,7 +86,7 @@ when the issue spans inherited code.
 1. **Acknowledgement** within ~7 days (single-maintainer project; times vary).
 2. **Reproducer request** if one was not provided.
 3. **Fix on `master`**, cherry-picked from upstream when applicable.
-4. **Changelog entry** in `docs/CHANGELOG-SolarFlare.md`.
+4. **Changelog entry** in `/docs/changelog`.
 5. **Advisory publication** when impact warrants coordinated disclosure.
 
 The fork does **not** ship backports to older release branches. Whether a
@@ -175,7 +175,7 @@ This is a coarse network ACL, not a substitute for strong credentials.
 where only local administrators should reach the UI. Avoid `wan` unless the UI
 is behind a separate reverse proxy with its own access controls.
 
-Configuration: [origin_web_ui_allowed](docs/configuration.md#origin_web_ui_allowed).
+Configuration: [origin_web_ui_allowed](https://vindeckyy.github.io/Solar-Flare/docs/configuration#origin_web_ui_allowed).
 
 ### TLS
 
@@ -218,7 +218,7 @@ Security headers on JSON API responses include `Strict-Transport-Security`
 receive **HTTP 403** with
 `"Token does not have the required scope for this endpoint"`.
 
-See [docs/api.md](docs/api.md) for the full scope-to-endpoint matrix.
+See [api](https://vindeckyy.github.io/Solar-Flare/docs/api) for the full scope-to-endpoint matrix.
 
 ### CSRF (browser sessions)
 
@@ -243,8 +243,8 @@ IP falls within `trusted_subnets` (CIDR list) are **paired without a PIN**.
 listed subnets. Prefer explicit PIN pairing for guest networks and IoT VLANs.
 
 Configuration:
-[trusted_subnet_auto_pairing](docs/configuration.md#trusted_subnet_auto_pairing),
-[trusted_subnets](docs/configuration.md#trusted_subnets).
+[trusted_subnet_auto_pairing](https://vindeckyy.github.io/Solar-Flare/docs/configuration#trusted_subnet_auto_pairing),
+[trusted_subnets](https://vindeckyy.github.io/Solar-Flare/docs/configuration#trusted_subnets).
 
 ### Webhooks
 
@@ -313,7 +313,7 @@ as soon as upstream ships them. Monitor **both** repositories for security
 advisories affecting inherited components (OpenSSL, FFmpeg, libcurl, etc. are
 bundled or linked per platform).
 
-Release notes: [docs/CHANGELOG-SolarFlare.md](docs/CHANGELOG-SolarFlare.md).
+Release notes: [changelog](https://vindeckyy.github.io/Solar-Flare/docs/changelog).
 
 ---
 
@@ -321,4 +321,4 @@ Release notes: [docs/CHANGELOG-SolarFlare.md](docs/CHANGELOG-SolarFlare.md).
 
 Security research conducted in good faith on software you own or have permission
 to test is welcome. Do not access systems or networks without authorization.
-See [docs/legal.md](docs/legal.md) for licensing and trademark notices.
+See [legal](https://vindeckyy.github.io/Solar-Flare/docs/legal) for licensing and trademark notices.

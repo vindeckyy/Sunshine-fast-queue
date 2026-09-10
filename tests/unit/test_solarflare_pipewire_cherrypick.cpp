@@ -110,7 +110,7 @@ TEST(SolarflarePipewireCherryPick, ForkLatencyBlockCoexists) {
        "config::solarflare.pipewire_latency_ms. The fork's "
        "PW_KEY_NODE_LATENCY hint (added in round 1) has been "
        "stripped -- probably by an over-eager rebase. Re-apply the "
-       "fork's block in ensure_stream (see docs/CONFIGURATION.md "
+       "fork's block in ensure_stream (see website /docs/configuration "
        "for the ranges).";
 
   // And it must use the right format (a fraction representing seconds).

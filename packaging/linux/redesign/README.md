@@ -218,7 +218,7 @@ added later.
 
 `linux-install.sh` **skips** these imperative units on NixOS. Express equivalent
 tuning declaratively in your NixOS configuration (CPU governor, ethtool, NVIDIA
-settings modules). See [Porting SolarFlare](../../../docs/PORTING.md#nixos).
+settings modules). See [Porting SolarFlare](https://vindeckyy.github.io/Solar-Flare/docs/porting).
 
 ---
 

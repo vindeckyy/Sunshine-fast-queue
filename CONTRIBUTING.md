@@ -6,7 +6,7 @@ path, host operations, or Web UI without breaking Moonlight compatibility.
 This document is the **policy layer**: scope, fork boundaries, review
 expectations, and where to send work. The **implementation layer** - toolchain
 setup, C++ style, Doxygen, localization, test commands, and pre-submit
-checks - lives in [docs/contributing.md](docs/contributing.md).
+checks - lives in [contributing](https://vindeckyy.github.io/Solar-Flare/docs/contributing).
 
 ---
 
@@ -86,7 +86,7 @@ integrations or regressions should be reported here.
 - **Fork documentation and regression contracts.**
 
 The authoritative fork-control inventory is
-[docs/CONFIGURATION.md](docs/CONFIGURATION.md); do not copy hard-coded setting
+[configuration](https://vindeckyy.github.io/Solar-Flare/docs/configuration); do not copy hard-coded setting
 counts into new documents.
 
 ---
@@ -155,7 +155,7 @@ The test executable on Windows is
 `cmake-build-dev\tests\test_sunshine.exe`.
 
 Platform-specific options and dependencies are documented in
-[docs/building.md](docs/building.md) and [docs/PORTING.md](docs/PORTING.md).
+[building](https://vindeckyy.github.io/Solar-Flare/docs/building) and [porting](https://vindeckyy.github.io/Solar-Flare/docs/porting).
 
 ---
 
@@ -344,7 +344,7 @@ Pull requests and pushes to `master` trigger [`.github/workflows/ci.yml`](.githu
 
 CI uses `release_version: 0.0.0-ci` for fork builds. **Release binaries are not
 produced in GitHub Actions**; see
-[docs/maintainers/release.md](docs/maintainers/release.md).
+[release-process](https://vindeckyy.github.io/Solar-Flare/docs/release-process).
 
 The inherited `_common-lint.yml` workflow only runs for repositories under the
 `LizardByte/` organization and is intentionally inert in this fork.

@@ -3,7 +3,7 @@
 This file defines **non-negotiable project conventions** for Cursor agents,
 CI bots, and other automation working in the SolarFlare tree. Human
 contributors should also follow these rules; the full contributor narrative is
-in [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/contributing.md](docs/contributing.md).
+in [CONTRIBUTING.md](CONTRIBUTING.md) and Website `/docs/contributing`.
 
 ---
 
@@ -144,10 +144,14 @@ When adding or changing user-visible strings in the Web UI:
 ## Documentation edits
 
 - Add or update **Doxygen** for C/C++ API changes.
-- Add or update **user/operator docs** under `docs/` when behavior or
-  configuration changes.
-- Maintainer-only procedures live under `docs/maintainers/` (excluded from the
-  public Doxygen site).
+- Add or update **user/operator docs** on the website docs tab
+  (`website/lib/docs-data.ts`) when behavior or configuration changes.
+  Do **not** add Markdown guides under `docs/` — that directory keeps only
+  Doxygen scaffolding (`Doxyfile`, CSS/JS), `docs/images/`, and the
+  `docs/configuration.md` test contract (read by
+  `tests/integration/test_config_consistency.cpp`).
+- Maintainer-only procedures live on the website (`/docs/maintainers`,
+  `/docs/release-process`) and are excluded from the Doxygen site.
 - When adding localization, follow the **en-only** rule above.
 
 ---
@@ -170,7 +174,7 @@ Default fork CI (`.github/workflows/ci.yml`):
 1. Web UI production bundle (`npm run build`)
 2. Linux compile + `test_sunshine` under Xvfb + coverage artifact upload
 
-Release binaries are **not** built in CI. See `docs/maintainers/release.md`.
+Release binaries are **not** built in CI. See `/docs/release-process` on the website.
 
 ---
 
@@ -190,6 +194,6 @@ npm run build   # when Web UI files changed
 | Document | Purpose |
 |---|---|
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Policy, PR checklist, fork boundaries |
-| [docs/contributing.md](docs/contributing.md) | Detailed development guide |
-| [docs/building.md](docs/building.md) | Platform dependencies |
-| [docs/maintainers/release.md](docs/maintainers/release.md) | Release process (maintainers) |
+| Website `/docs/contributing` | Detailed development guide |
+| Website `/docs/building` | Platform dependencies |
+| Website `/docs/release-process` | Release process (maintainers) |

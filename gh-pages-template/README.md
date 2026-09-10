@@ -77,7 +77,7 @@ deliberately reverting to the legacy Jekyll site (not supported for SolarFlare).
 | Build fails in CI | Node version in workflow; `npm ci` lockfile |
 | Images broken | Paths under `website/public/` |
 
-See [Maintainers - release](../docs/maintainers/release.md) for version badges
+See [Maintainers - release](https://vindeckyy.github.io/Solar-Flare/docs/release-process) for version badges
 that must match README and `docs-data.ts` after releases.
 
 ---
@@ -85,5 +85,5 @@ that must match README and `docs-data.ts` after releases.
 ## See also
 
 - [website/README.md](../website/README.md) if present
-- [Maintainers README](../docs/maintainers/README.md)
-- [Guides - ecosystem](../docs/guides.md)
+- [Maintainers README](https://vindeckyy.github.io/Solar-Flare/docs/maintainers)
+- [Guides - ecosystem](https://vindeckyy.github.io/Solar-Flare/docs/guides)

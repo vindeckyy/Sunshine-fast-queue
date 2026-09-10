@@ -370,7 +370,7 @@ protected:
   // test doesn't expect them in config.html / en.json either.
   const std::set<std::string, std::less<>> docOnlySections = {
     // SolarFlare fork tunables (see src/config.h > solarflare_t,
-    // docs/CONFIGURATION.md, docs/configuration.md > SolarFlare Fork).
+    // website /docs/configuration > SolarFlare Fork; docs/configuration.md contract).
     "SolarFlare Fork",
   };
 
@@ -461,7 +461,7 @@ static std::set<std::string, std::less<>> make_internal_options() {
   return {
     "flags",  // Internal config flags, not user-configurable
     // SolarFlare fork tunables: expert kernel-level knobs documented in
-    // docs/CONFIGURATION.md but intentionally NOT exposed in the web UI
+    // website /docs/configuration but intentionally NOT exposed in the web UI
     // (changing them mid-session needs a restart anyway, and most users
     // should leave the defaults alone).
     "busy_poll_us",

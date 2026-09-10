@@ -323,7 +323,7 @@ else
       warn "Unknown distro '${DISTRO_ID}'. Skipping automatic package install."
       warn "Either install the packages manually and re-run with --no-pacman,"
       warn "or open an issue with your distro's package names."
-      warn "See docs/PORTING.md for the package-name translation table."
+      warn "See https://vindeckyy.github.io/Solar-Flare/docs/porting for the package-name translation table."
       ;;
   esac
 fi
@@ -499,7 +499,7 @@ systemctl --user daemon-reload 2>/dev/null || true
 step "post-install  fork redesign services"
 if [[ "$IS_NIXOS" -eq 1 ]]; then
   say "Skipping imperative system tuning services on NixOS."
-  say "See docs/PORTING.md for the declarative NixOS host configuration."
+  say "See https://vindeckyy.github.io/Solar-Flare/docs/porting for the declarative NixOS host configuration."
 elif [[ -x "$REPO_ROOT/packaging/linux/redesign/install-redesign-services.sh" ]]; then
   say "Installing fork redesign services..."
   if sudo "$REPO_ROOT/packaging/linux/redesign/install-redesign-services.sh"; then
@@ -659,7 +659,7 @@ if [[ "$IS_NIXOS" -eq 1 ]]; then
   NixOS host integration:
 
     1. Apply the uinput, video-group, and firewall settings from
-       docs/PORTING.md with sudo nixos-rebuild switch.
+       https://vindeckyy.github.io/Solar-Flare/docs/porting with sudo nixos-rebuild switch.
     2. Ensure ${SOLARFLARE_INSTALL_PREFIX}/bin is in your login PATH.
 
   The generated service uses ${SOLARFLARE_INSTALL_PREFIX}/bin/sunshine.
@@ -692,7 +692,7 @@ cat <<'EOF'
     pipewire_latency_ms PW_KEY_NODE_LATENCY hint (1-40, default 8)
     cpu_pinning         SCHED_RR + core affinity for capture (default true)
 
-  See docs/CONFIGURATION.md for ranges and behaviour.
+  See https://vindeckyy.github.io/Solar-Flare/docs/configuration for ranges and behaviour.
 
   Tunable knobs for the build:
     ./scripts/linux-install.sh --clean      # nuke the build dir and start over

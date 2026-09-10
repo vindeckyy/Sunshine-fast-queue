@@ -20,7 +20,7 @@
     <a href="#performance-architecture">Architecture</a> |
     <a href="#configuration">Configuration</a> |
     <a href="#build-and-test">Build</a> |
-    <a href="docs/CHANGELOG-SolarFlare.md">Changelog</a>
+    <a href="https://vindeckyy.github.io/Solar-Flare/docs/changelog">Changelog</a>
   </p>
 </div>
 
@@ -126,8 +126,8 @@ The fork-specific path sits in four areas:
 4. **Control:** The HTTPS UI, API scopes, pairing rules, and diagnostics expose
    host state. No cloud services sit in the streaming path.
 
-See [SolarFlare configuration](docs/CONFIGURATION.md) for fork controls and the
-[complete configuration reference](docs/configuration.md) for inherited host
+See [SolarFlare configuration](https://vindeckyy.github.io/Solar-Flare/docs/configuration) for fork controls and the
+[complete configuration reference](https://vindeckyy.github.io/Solar-Flare/docs/configuration) for inherited host
 options.
 
 ## Install
@@ -171,13 +171,13 @@ systemctl --user enable --now app-dev.lizardbyte.app.Sunshine.service
 The installer detects Arch/CachyOS, Debian/Ubuntu, Fedora-family, openSUSE,
 Bazzite, and NixOS hosts. On NixOS it enters the repository's reproducible
 Nix shell and installs into `~/.local`. Read the
-[porting guide](docs/PORTING.md) for the required declarative host settings
+[porting guide](https://vindeckyy.github.io/Solar-Flare/docs/porting) for the required declarative host settings
 or before using an unsupported distribution.
 
 | Distribution family | Package manager used by installer | Notes |
 |---|---|---|
 | Arch, CachyOS, Manjaro, EndeavourOS | `pacman` | Primary development target |
-| Debian, Ubuntu, Mint, Pop!, Kali | `apt` | Requires GCC 13+; see [Porting](docs/PORTING.md) |
+| Debian, Ubuntu, Mint, Pop!, Kali | `apt` | Requires GCC 13+; see [Porting](https://vindeckyy.github.io/Solar-Flare/docs/porting) |
 | Fedora, Nobara, Rocky, Alma | `dnf` | `rpm-fusion` may be required for FFmpeg headers |
 | openSUSE Tumbleweed / Leap | `zypper` | Package names use underscores in some cases |
 | Bazzite / rpm-ostree | `rpm-ostree` | **Reboot required** after dependency layering |
@@ -266,7 +266,7 @@ After install, complete these steps once before streaming from Moonlight.
 2. **Open the Web UI** at `https://localhost:47990` (or `https://<host-lan-ip>:47990`).
    Accept the self-signed certificate warning - SolarFlare uses a locally generated TLS cert.
 3. **Create credentials** on first launch. Store them securely; reset with
-   `sunshine --creds <user> <pass>` if forgotten ([troubleshooting](docs/troubleshooting.md)).
+   `sunshine --creds <user> <pass>` if forgotten ([troubleshooting](https://vindeckyy.github.io/Solar-Flare/docs/troubleshooting)).
 4. **Add applications** under **Applications**, or run the built-in game scanner.
 5. **Pair Moonlight:**
    - On the client, add the host by IP or mDNS hostname.
@@ -281,16 +281,16 @@ After install, complete these steps once before streaming from Moonlight.
 > [!WARNING]
 > Trusted-subnet auto-pairing (`trusted_subnets`, `trusted_subnet_auto_pairing`)
 > skips the PIN for clients on listed CIDR ranges. Use only on networks you fully
-> control. See [SolarFlare configuration](docs/CONFIGURATION.md#trusted-subnets-and-auto-pairing).
+> control. See [SolarFlare configuration](https://vindeckyy.github.io/Solar-Flare/docs/configuration#trusted-subnets-and-auto-pairing).
 
 Step-by-step pairing flows, firewall rules, and client-specific notes live in
-[Getting started - SolarFlare on Linux](docs/getting_started.md#solarflare-on-linux-first-run).
+[Getting started - SolarFlare on Linux](https://vindeckyy.github.io/Solar-Flare/docs/getting-started#solarflare-on-linux-first-run).
 
 ## Network ports and firewall
 
 With the default `port = 47989` in `sunshine.conf`, SolarFlare binds the
 GameStream-compatible port set below. Changing `port` shifts every derived
-port by the same offset - see the [port setting](docs/configuration.md) in the
+port by the same offset - see the [port setting](https://vindeckyy.github.io/Solar-Flare/docs/configuration) in the
 complete configuration reference.
 
 | Service | Protocol | Default port | Required for |
@@ -315,7 +315,7 @@ client subnet and the host. **Internet streaming:** Enable UPnP in the Web UI
 or forward the same ports manually on your router.
 
 Distro-specific firewall examples (`ufw`, `firewalld`, `nftables`, NixOS) are
-documented in [Getting started](docs/getting_started.md#firewall-rules-by-distribution).
+documented in [Getting started](https://vindeckyy.github.io/Solar-Flare/docs/getting-started#firewall-rules-by-distribution).
 
 ## Moonlight client compatibility
 
@@ -336,7 +336,7 @@ configured SolarFlare host.
 **Codec support** depends on host hardware (NVENC, VAAPI, software) and client
 capabilities. H.264 is universally supported; HEVC and AV1 require encoder and
 client support on both ends. Per-client overrides are available via
-`client_profile_*` keys - see [SolarFlare configuration](docs/CONFIGURATION.md#per-client-streaming-profiles).
+`client_profile_*` keys - see [SolarFlare configuration](https://vindeckyy.github.io/Solar-Flare/docs/configuration#per-client-streaming-profiles).
 
 ## Headless hosts and multi-GPU systems
 
@@ -346,11 +346,11 @@ SolarFlare can stream from machines without a physical display:
 
 1. Enable `headless_virtual_display = true` and optional
    `headless_width` / `headless_height` / `headless_refresh` in
-   `sunshine.conf` - see [headless capture](docs/CONFIGURATION.md#headless_virtual_display).
+   `sunshine.conf` - see [headless capture](https://vindeckyy.github.io/Solar-Flare/docs/configuration#headless_virtual_display).
 2. For NVIDIA hosts, an HDMI/DP dummy plug or EDID emulator is still often
    required for stable modes and NVENC initialization.
 3. KMS capture (HDR, lowest latency on AMD/Intel) needs an active DRM output;
-   virtual outputs and Hermes-KMS are covered in [Getting started](docs/getting_started.md#headless-and-virtual-display-setup).
+   virtual outputs and Hermes-KMS are covered in [Getting started](https://vindeckyy.github.io/Solar-Flare/docs/getting-started#headless-and-virtual-display-setup).
 
 ### Multi-GPU and hybrid graphics
 
@@ -372,14 +372,14 @@ definitions in `~/.config/sunshine/apps.json`.
 
 | Area | Representative controls | Documentation |
 |---|---|---|
-| Network | `busy_poll_us`, `rate_cap_pct`, `enet_4mib_buffer`, `dscp_qos` | [Fork controls](docs/CONFIGURATION.md#the-tunables-at-a-glance) |
-| Scheduling | `cpu_pinning`, `gpu_governor` | [Scheduling behavior](docs/CONFIGURATION.md#cpu_pinning) |
-| Capture | `headless_virtual_display`, `headless_width`, `headless_height`, `headless_refresh` | [Capture controls](docs/CONFIGURATION.md#headless_virtual_display) |
-| Latency | `latency_mode` (`safe` / `aggressive`) | [Latency mode](docs/CONFIGURATION.md#latency_mode) |
-| Session | `idle_timeout_min`, per-client profiles (`client_profile_*`), webhooks (`webhook_url_*`, `webhook_secret`) | [Webhooks](docs/CONFIGURATION.md#webhooks) / [Profiles](docs/CONFIGURATION.md#per-client-streaming-profiles) |
-| Video | `nvenc_tuning_preset`, adaptive bitrate, codec and quality controls | [Complete reference](docs/configuration.md) |
-| Audio | `pipewire_latency_ms`, `sf_audio_*`, `sf_opus_*` | [Audio FX](docs/CONFIGURATION.md#audio-fx-pre-encoder-processing) |
-| Access | Scoped API tokens, trusted subnets, pairing, origin policy | [API](docs/api.md) / [Security](SECURITY.md) |
+| Network | `busy_poll_us`, `rate_cap_pct`, `enet_4mib_buffer`, `dscp_qos` | [Fork controls](https://vindeckyy.github.io/Solar-Flare/docs/configuration#the-tunables-at-a-glance) |
+| Scheduling | `cpu_pinning`, `gpu_governor` | [Scheduling behavior](https://vindeckyy.github.io/Solar-Flare/docs/configuration#cpu_pinning) |
+| Capture | `headless_virtual_display`, `headless_width`, `headless_height`, `headless_refresh` | [Capture controls](https://vindeckyy.github.io/Solar-Flare/docs/configuration#headless_virtual_display) |
+| Latency | `latency_mode` (`safe` / `aggressive`) | [Latency mode](https://vindeckyy.github.io/Solar-Flare/docs/configuration#latency_mode) |
+| Session | `idle_timeout_min`, per-client profiles (`client_profile_*`), webhooks (`webhook_url_*`, `webhook_secret`) | [Webhooks](https://vindeckyy.github.io/Solar-Flare/docs/configuration#webhooks) / [Profiles](https://vindeckyy.github.io/Solar-Flare/docs/configuration#per-client-streaming-profiles) |
+| Video | `nvenc_tuning_preset`, adaptive bitrate, codec and quality controls | [Complete reference](https://vindeckyy.github.io/Solar-Flare/docs/configuration) |
+| Audio | `pipewire_latency_ms`, `sf_audio_*`, `sf_opus_*` | [Audio FX](https://vindeckyy.github.io/Solar-Flare/docs/configuration#audio-fx-pre-encoder-processing) |
+| Access | Scoped API tokens, trusted subnets, pairing, origin policy | [API](https://vindeckyy.github.io/Solar-Flare/docs/api) / [Security](SECURITY.md) |
 
 For a minimal per-application encoder override:
 
@@ -421,7 +421,7 @@ cmake --build cmake-build-tests --target test_sunshine -j2
 ```
 
 Platform-specific dependencies and compiler requirements are documented in
-[Building](docs/building.md) and [Porting SolarFlare](docs/PORTING.md).
+[Building](https://vindeckyy.github.io/Solar-Flare/docs/building) and [Porting SolarFlare](https://vindeckyy.github.io/Solar-Flare/docs/porting).
 
 ## Repository map
 
@@ -432,29 +432,37 @@ Platform-specific dependencies and compiler requirements are documented in
 | `tests/` | Unit, integration, regression, and documentation contracts |
 | `packaging/` | Platform packaging and optional Linux performance services |
 | `scripts/` | Linux installer, release, screenshot, and maintenance tooling |
-| `docs/` | User, operator, developer, and inherited configuration references |
+| `website/lib/docs-data.ts` | Canonical user, operator, developer, and configuration reference (docs tab) |
 
 ## Documentation
 
 | Document | Use it for |
 |---|---|
-| [Getting started](docs/getting_started.md) | SolarFlare Linux setup, pairing, firewall, ports; inherited platform reference |
-| [Guides](docs/guides.md) | Curated how-tos: headless, LAN tuning, multi-GPU, migration workflows |
-| [GameStream migration](docs/gamestream_migration.md) | Moving from NVIDIA GameStream or Moonlight Internet Hosting Tool |
-| [SolarFlare configuration](docs/CONFIGURATION.md) | Fork-specific network, scheduling, audio, and capture controls |
-| [Complete configuration](docs/configuration.md) | Every inherited host option |
-| [Porting](docs/PORTING.md) | Distribution packages, toolchains, and manual builds |
-| [Troubleshooting](docs/troubleshooting.md) | Capture, encoder, audio, networking, and input diagnostics |
-| [API](docs/api.md) | Automation and scoped host access |
-| [Security](SECURITY.md) | Supported versions and private vulnerability reporting |
-| [SolarFlare changelog](docs/CHANGELOG-SolarFlare.md) | Fork release and implementation history |
+| [Getting started](https://vindeckyy.github.io/Solar-Flare/docs/getting-started) | SolarFlare Linux setup, pairing, firewall, ports |
+| [Operator guides](https://vindeckyy.github.io/Solar-Flare/docs/guides) | Curated how-tos: headless, LAN tuning, multi-GPU, migration workflows |
+| [GameStream migration](https://vindeckyy.github.io/Solar-Flare/docs/gamestream-migration) | Moving from NVIDIA GameStream or Moonlight Internet Hosting Tool |
+| [SolarFlare configuration](https://vindeckyy.github.io/Solar-Flare/docs/configuration) | Fork-specific network, scheduling, audio, and capture controls |
+| [App examples](https://vindeckyy.github.io/Solar-Flare/docs/app-examples) | Launch configs for Steam, Epic, Lutris, and encoder presets |
+| [Performance tuning](https://vindeckyy.github.io/Solar-Flare/docs/performance-tuning) | Latency reduction and host optimization |
+| [Porting](https://vindeckyy.github.io/Solar-Flare/docs/porting) | Distribution packages, toolchains, and manual builds |
+| [Building](https://vindeckyy.github.io/Solar-Flare/docs/building) | CMake configure, compile, and test |
+| [Troubleshooting](https://vindeckyy.github.io/Solar-Flare/docs/troubleshooting) | Capture, encoder, audio, networking, and input diagnostics |
+| [API](https://vindeckyy.github.io/Solar-Flare/docs/api) | Automation and scoped host access |
+| [Security](https://vindeckyy.github.io/Solar-Flare/docs/security) | Supported versions and private vulnerability reporting |
+| [Legal](https://vindeckyy.github.io/Solar-Flare/docs/legal) | GPL-3.0, trademarks, codecs, and privacy |
+| [Dependencies](https://vindeckyy.github.io/Solar-Flare/docs/third-party-packages) | Submodules, FFmpeg pins, and community-package warnings |
+| [Ecosystem](https://vindeckyy.github.io/Solar-Flare/docs/ecosystem) | Awesome-Sunshine catalog and upstream history |
+| [Contributing](https://vindeckyy.github.io/Solar-Flare/docs/contributing) | Code style, Doxygen, tests, and PR rules |
+| [Release process](https://vindeckyy.github.io/Solar-Flare/docs/release-process) | Maintainer tagging and publishing SOP |
+| [Maintainers](https://vindeckyy.github.io/Solar-Flare/docs/maintainers) | Triage, versioning, artifacts, CI, and handoff |
+| [SolarFlare changelog](https://vindeckyy.github.io/Solar-Flare/docs/changelog) | Fork release and implementation history |
 
 ## Project policy
 
 - **Security:** report SolarFlare-specific vulnerabilities privately through
   [GitHub Security Advisories](https://github.com/vindeckyy/Solar-Flare/security/advisories/new).
 - **Contributions:** read [CONTRIBUTING.md](CONTRIBUTING.md) and the
-  [development guide](docs/contributing.md) before opening changes.
+  [development guide](https://vindeckyy.github.io/Solar-Flare/docs/contributing) before opening changes.
 - **License:** SolarFlare is distributed under
   [GPL-3.0-only](LICENSE).
 - **Upstream:** the GameStream foundation and inherited platform work come
