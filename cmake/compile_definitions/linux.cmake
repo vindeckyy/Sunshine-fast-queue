@@ -116,6 +116,16 @@ endif()
 # evdev
 include(dependencies/libevdev_Sunshine)
 
+find_package(Udev)
+if(UDEV_FOUND)
+    include_directories(SYSTEM ${UDEV_INCLUDE_DIRS})
+    list(APPEND PLATFORM_LIBRARIES ${UDEV_LIBRARIES})
+    list(APPEND SUNSHINE_DEFINITIONS SUNSHINE_BUILD_WITH_UDEV)
+    message(STATUS "Found libudev: ${UDEV_LIBRARIES}")
+else()
+    message(STATUS "libudev not found; input seat routing disabled")
+endif()
+
 # vaapi
 if(${SUNSHINE_ENABLE_VAAPI})
     find_package(Libva REQUIRED)

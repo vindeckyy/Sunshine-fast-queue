@@ -513,6 +513,42 @@ output. Use it when Sunshine refuses to start because no display is detected.
 Combine with `headless_width` / `headless_height` / `headless_refresh` for a
 fixed 1920×1080@120 virtual panel on a datacenter GPU.
 
+## Linux input settings
+
+SolarFlare can route its virtual mouse, keyboard, touch, pen, and gamepad
+devices to a specific systemd-logind seat. This is useful when multiple
+graphical sessions run on separate seats (for example `seat0` and `seat1`).
+
+### `input_seat`
+
+| Key | Type | Default | Range | What it does |
+|---|---|---|---|---|
+| `input_seat` | string | `""` | any seat name, e.g. `seat1` | Target systemd-logind seat for virtual input devices. Empty follows `XDG_SEAT`; `seat0` or empty disables isolation. Non-default seats trigger runtime udev rule `/run/udev/rules.d/99-solarflare-seat.rules` and `EVIOCGRAB` hardening. |
+
+Runtime rule injection is the primary path. SolarFlare writes a transient
+rule to `/run/udev/rules.d/99-solarflare-seat.rules` and synthesizes a
+`change` uevent for each virtual device. If `/run/udev` is not writable,
+copy the shipped fallback file `src_assets/linux/misc/99-solarflare-seat.rules`
+to `/etc/udev/rules.d/99-solarflare-seat.rules` (or `/usr/lib/udev/rules.d/`),
+edit the seat literal, and reload:
+
+```bash
+sudo cp src_assets/linux/misc/99-solarflare-seat.rules /etc/udev/rules.d/99-solarflare-seat.rules
+# Edit ATTRS{name}=="* (seat1)" and ENV{ID_SEAT}="seat1" as needed
+sudo udevadm control --reload-rules && sudo udevadm trigger -s input
+```
+
+The target seat must already exist and usually needs a display or input
+device attached. Create and populate it with `loginctl seat-add` before
+starting SolarFlare:
+
+```bash
+sudo loginctl seat-add seat1 /sys/bus/pci/devices/0000:00:02.0
+```
+
+Then connect the physical display and input devices to that seat, or use the
+same seat for a headless nested compositor session.
+
 ## Tuning recipes
 
 Copy-paste snippets for common scenarios. All keys go in `~/.config/sunshine/sunshine.conf`

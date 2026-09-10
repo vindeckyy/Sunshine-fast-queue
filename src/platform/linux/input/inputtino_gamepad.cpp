@@ -8,6 +8,7 @@
 #include <boost/locale.hpp>
 #include <inputtino/input.hpp>
 #include <libevdev/libevdev.h>
+#include <variant>
 
 // local includes
 #include "inputtino_common.h"
@@ -29,23 +30,42 @@ namespace platf::gamepad {
     GAMEPAD_STATUS  ///< Helper to indicate the number of status
   };
 
-  auto create_xbox_one() {
-    return inputtino::XboxOneJoypad::create({.name = inputtino_name_for_seat("Sunshine X-Box One (virtual) pad"sv),
+  /**
+   * @brief Create a virtual Xbox One joypad with the given seat-aware name.
+   *
+   * @param name The seat-aware device name to use.
+   * @return An inputtino::Result wrapping the created joypad.
+   */
+  auto create_xbox_one(std::string_view name) {
+    return inputtino::XboxOneJoypad::create({.name = std::string(name),
                                              // https://github.com/torvalds/linux/blob/master/drivers/input/joystick/xpad.c#L147
                                              .vendor_id = 0x045E,
                                              .product_id = 0x02EA,
                                              .version = 0x0408});
   }
 
-  auto create_switch() {
-    return inputtino::SwitchJoypad::create({.name = inputtino_name_for_seat("Sunshine Nintendo (virtual) pad"sv),
+  /**
+   * @brief Create a virtual Nintendo Switch Pro joypad with the given seat-aware name.
+   *
+   * @param name The seat-aware device name to use.
+   * @return An inputtino::Result wrapping the created joypad.
+   */
+  auto create_switch(std::string_view name) {
+    return inputtino::SwitchJoypad::create({.name = std::string(name),
                                             // https://github.com/torvalds/linux/blob/master/drivers/hid/hid-ids.h#L981
                                             .vendor_id = 0x057e,
                                             .product_id = 0x2009,
                                             .version = 0x8111});
   }
 
-  auto create_ds5(int globalIndex) {
+  /**
+   * @brief Create a virtual DualSense 5 (PS5) joypad with the given seat-aware name.
+   *
+   * @param globalIndex The gamepad global index used to derive a deterministic MAC, or -1 for random.
+   * @param name The seat-aware device name to use.
+   * @return An inputtino::Result wrapping the created joypad.
+   */
+  auto create_ds5(int globalIndex, std::string_view name) {
     std::string device_mac = "";  // Inputtino checks empty() to generate a random MAC
 
     if (!config::input.ds5_inputtino_randomize_mac && globalIndex >= 0 && globalIndex <= 255) {
@@ -53,7 +73,7 @@ namespace platf::gamepad {
       device_mac = std::format("02:00:00:00:00:{:02x}", globalIndex);
     }
 
-    return inputtino::PS5Joypad::create({.name = inputtino_name_for_seat("Sunshine PS5 (virtual) pad"sv), .vendor_id = 0x054C, .product_id = 0x0CE6, .version = 0x8111, .device_phys = device_mac, .device_uniq = device_mac});
+    return inputtino::PS5Joypad::create({.name = std::string(name), .vendor_id = 0x054C, .product_id = 0x0CE6, .version = 0x8111, .device_phys = device_mac, .device_uniq = device_mac});
   }
 
   int alloc(input_raw_t *raw, const gamepad_id_t &id, const gamepad_arrival_t &metadata, feedback_queue_t feedback_queue) {
@@ -107,6 +127,9 @@ namespace platf::gamepad {
       }
     }
 
+    const auto seat = inputtino_seat::get_target_seat();
+    const bool seat_active = inputtino_seat::seat_isolation_active();
+
     auto gamepad = std::make_shared<joypad_state>(joypad_state {});
     auto on_rumble_fn = [feedback_queue, idx = id.clientRelativeIndex, gamepad](int low_freq, int high_freq) {
       // Don't resend duplicate rumble data
@@ -122,10 +145,17 @@ namespace platf::gamepad {
     switch (selectedGamepadType) {
       case XboxOneWired:
         {
-          auto xOne = create_xbox_one();
+          auto name = inputtino_name_for_seat("Sunshine X-Box One (virtual) pad"sv);
+          auto xOne = create_xbox_one(name);
           if (xOne) {
             (*xOne).set_on_rumble(on_rumble_fn);
             gamepad->joypad = std::make_unique<joypads_t>(std::move(*xOne));
+            auto nodes = std::visit([](const auto &j) {
+              return j.get_nodes();
+            },
+                                    *gamepad->joypad);
+            inputtino_seat::assign_device_to_seat(name, nodes, seat);
+            gamepad->grab_guard = evdev_grab_guard_t {open_event_nodes(nodes), seat_active};
             raw->gamepads[id.globalIndex] = std::move(gamepad);
             return 0;
           } else {
@@ -135,10 +165,17 @@ namespace platf::gamepad {
         }
       case SwitchProWired:
         {
-          auto switchPro = create_switch();
+          auto name = inputtino_name_for_seat("Sunshine Nintendo (virtual) pad"sv);
+          auto switchPro = create_switch(name);
           if (switchPro) {
             (*switchPro).set_on_rumble(on_rumble_fn);
             gamepad->joypad = std::make_unique<joypads_t>(std::move(*switchPro));
+            auto nodes = std::visit([](const auto &j) {
+              return j.get_nodes();
+            },
+                                    *gamepad->joypad);
+            inputtino_seat::assign_device_to_seat(name, nodes, seat);
+            gamepad->grab_guard = evdev_grab_guard_t {open_event_nodes(nodes), seat_active};
             raw->gamepads[id.globalIndex] = std::move(gamepad);
             return 0;
           } else {
@@ -148,7 +185,8 @@ namespace platf::gamepad {
         }
       case DualSenseWired:
         {
-          auto ds5 = create_ds5(id.globalIndex);
+          auto name = inputtino_name_for_seat("Sunshine PS5 (virtual) pad"sv);
+          auto ds5 = create_ds5(id.globalIndex, name);
           if (ds5) {
             (*ds5).set_on_rumble(on_rumble_fn);
             (*ds5).set_on_led([feedback_queue, idx = id.clientRelativeIndex, gamepad](int r, int g, int b) {
@@ -171,6 +209,12 @@ namespace platf::gamepad {
             feedback_queue->raise(gamepad_feedback_msg_t::make_motion_event_state(id.clientRelativeIndex, LI_MOTION_TYPE_GYRO, 100));
 
             gamepad->joypad = std::make_unique<joypads_t>(std::move(*ds5));
+            auto nodes = std::visit([](const auto &j) {
+              return j.get_nodes();
+            },
+                                    *gamepad->joypad);
+            inputtino_seat::assign_device_to_seat(name, nodes, seat);
+            gamepad->grab_guard = evdev_grab_guard_t {open_event_nodes(nodes), seat_active};
             raw->gamepads[id.globalIndex] = std::move(gamepad);
             return 0;
           } else {
@@ -183,6 +227,8 @@ namespace platf::gamepad {
   }
 
   void free(input_raw_t *raw, int nr) {
+    // Release the EVIOCGRAB before the inputtino device is destroyed.
+    raw->gamepads[nr]->grab_guard = evdev_grab_guard_t {};
     // This will call the destructor which in turn will stop the background threads for rumble and LED (and ultimately remove the joypad device)
     raw->gamepads[nr]->joypad.reset();
     raw->gamepads[nr].reset();
@@ -277,9 +323,11 @@ namespace platf::gamepad {
       return gps;
     }
 
-    auto ds5 = create_ds5(-1);  // Index -1 will result in a random MAC virtual device, which is fine for probing
-    auto switchPro = create_switch();
-    auto xOne = create_xbox_one();
+    // Probe temporary devices with base names (no seat suffix). These must not
+    // assign seats or take grabs; they are destroyed when the function returns.
+    auto ds5 = create_ds5(-1, "Sunshine PS5 (virtual) pad"sv);  // Index -1 will result in a random MAC virtual device, which is fine for probing
+    auto switchPro = create_switch("Sunshine Nintendo (virtual) pad"sv);
+    auto xOne = create_xbox_one("Sunshine X-Box One (virtual) pad"sv);
 
     static std::vector gps {
       supported_gamepad_t {"auto", true, ""},

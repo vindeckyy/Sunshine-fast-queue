@@ -386,29 +386,42 @@ sudo usermod -aG input $USER
 
 A compositor may ignore injected input when concurrent Wayland sessions run on
 separate logind seats, such as `seat0` and `seat1`, unless SolarFlare's virtual
-devices use the correct seat.
+devices are assigned to the correct seat.
 
-SolarFlare reads the target seat from `XDG_SEAT`, which the display manager
-usually sets. You can override it in the systemd service or shell environment
-before starting SolarFlare.
-
-For seats other than `seat0`, SolarFlare appends the seat name to each virtual device name:
-
-- Keyboard passthrough (seat1)
-- Sunshine PS5 (virtual) pad (seat1)
-
-SolarFlare creates one relative mouse device and one absolute mouse device.
-
-Create `/etc/udev/rules.d/72-sunshine-virtual-seat.rules` to assign the virtual devices to the correct seat:
-```udev
-SUBSYSTEM=="input", KERNEL=="input*", ATTR{name}=="*(seat1)*", TAG+="seat", ENV{ID_SEAT}="seat1"
-```
-
-Then reload udev:
+Set the target seat with the `input_seat` config key (Web UI Input tab or
+`sunshine.conf`):
 
 ```bash
+input_seat = seat1
+```
+
+Precedence is `input_seat` > `XDG_SEAT` > empty/`seat0` (no isolation).
+The target seat must exist and usually needs a display or input device
+attached. Create and populate it before starting SolarFlare:
+
+```bash
+sudo loginctl seat-add seat1 /sys/bus/pci/devices/0000:00:02.0
+```
+
+When `input_seat` is set to a non-default seat, SolarFlare writes a transient
+runtime udev rule to `/run/udev/rules.d/99-solarflare-seat.rules` and
+synthesizes a `change` uevent for each virtual device. Runtime injection is the
+primary path and updates automatically as devices are created.
+
+If `/run/udev` is read-only or runtime injection is otherwise unavailable, copy
+the shipped fallback rule and edit the seat literal:
+
+```bash
+sudo cp src_assets/linux/misc/99-solarflare-seat.rules /etc/udev/rules.d/99-solarflare-seat.rules
+# Edit the ATTRS{name}=="* (seat1)" and ENV{ID_SEAT}="seat1" literal as needed
 sudo udevadm control --reload-rules && sudo udevadm trigger -s input
 ```
+
+SolarFlare also appends the seat name (for example ` (seat1)`) to each virtual
+device name, so the rule matches:
+- Keyboard passthrough (seat1)
+- Mouse passthrough (seat1)
+- Sunshine PS5 (virtual) pad (seat1)
 
 ### KMS streaming fails
 

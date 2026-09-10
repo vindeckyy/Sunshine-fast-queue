@@ -13,6 +13,7 @@ file(CREATE_LINK "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/assets/shaders"
 
 if(${SUNSHINE_BUILD_APPIMAGE} OR ${SUNSHINE_BUILD_FLATPAK})
     install(FILES "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/60-sunshine.rules"
+            "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/99-solarflare-seat.rules"
             DESTINATION "${SUNSHINE_ASSETS_DIR}/udev/rules.d")
     install(FILES "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/60-sunshine.conf"
             DESTINATION "${SUNSHINE_ASSETS_DIR}/modules-load.d")
@@ -20,6 +21,7 @@ if(${SUNSHINE_BUILD_APPIMAGE} OR ${SUNSHINE_BUILD_FLATPAK})
             DESTINATION "${SUNSHINE_ASSETS_DIR}/systemd/user")
 elseif(${SUNSHINE_BUILD_HOMEBREW})
     install(FILES "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/60-sunshine.rules"
+            "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/99-solarflare-seat.rules"
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/udev/rules.d")
     install(FILES "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/60-sunshine.conf"
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/modules-load.d")
@@ -31,6 +33,7 @@ else()
 
     if(UDEV_FOUND)
         install(FILES "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/60-sunshine.rules"
+                "${SUNSHINE_SOURCE_ASSETS_DIR}/linux/misc/99-solarflare-seat.rules"
                 DESTINATION "${UDEV_RULES_INSTALL_DIR}")
     endif()
     if(SYSTEMD_FOUND)

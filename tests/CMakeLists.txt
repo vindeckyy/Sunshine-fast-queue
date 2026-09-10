@@ -166,11 +166,17 @@ endforeach()
 add_dependencies(${PROJECT_NAME} sync_locale_files)
 
 # Build the list of libraries to link
+# Tests run on the build host where the static libstdc++ may not be installed;
+# remove the static flags inherited from the main target and re-link dynamically.
+set(TEST_SUNSHINE_EXTERNAL_LIBRARIES ${SUNSHINE_EXTERNAL_LIBRARIES})
+list(REMOVE_ITEM TEST_SUNSHINE_EXTERNAL_LIBRARIES -static-libgcc -static-libstdc++)
+
 set(TEST_LINK_LIBRARIES
-    ${SUNSHINE_EXTERNAL_LIBRARIES}
+    ${TEST_SUNSHINE_EXTERNAL_LIBRARIES}
     gtest
     ${PLATFORM_LIBRARIES}
-    stdc++
+    $<$<AND:$<CXX_COMPILER_ID:GNU>,$<PLATFORM_ID:Linux>>:-shared-libgcc>
+    $<$<AND:$<CXX_COMPILER_ID:GNU>,$<PLATFORM_ID:Linux>>:-lstdc++>
 )
 
 # Add the specific libgcov library if found

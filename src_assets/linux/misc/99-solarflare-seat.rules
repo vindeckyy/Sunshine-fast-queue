@@ -1,0 +1,6 @@
+# Fallback udev rule for SolarFlare input seat isolation.
+# Runtime udev rule injection is the primary path; this rule is for
+# locked-down hosts where /run/udev is read-only or runtime injection
+# is otherwise unavailable. Edit the seat literal or create per-seat
+# copies as needed.
+SUBSYSTEM=="input", KERNEL=="event*|js*", ATTRS{name}=="* (seat1)", TAG+="seat", ENV{ID_SEAT}="seat1"
